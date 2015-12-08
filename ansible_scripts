@@ -1,0 +1,21 @@
+#create password
+#python -c "from passlib.hash import sha512_crypt; import getpass; print sha512_crypt.encrypt(getpass.getpass())"
+ansible all -i ./hosts -m user -a 'name=root password=	$6$rounds=656000$t3dtIlWfPpDJJhTg$c98LVAip1AH7QvbT0LNn8HeqCS4sg.3o3r8x6k32VSX4r.1CxQuwWlUYFdLykmUea2TAKljhdKteKKFhrZEHe1'
+
+#Run sample command
+ansible all -i ./hosts -a "whoami" -f 2
+
+#Copy and run the commands
+ansible all -i ./hosts -a "sh /root/createswap.sh"
+
+
+#Presetup of machines
+ansible all -i ./hosts -m user -a 'name=root password=	$6$rounds=656000$t3dtIlWfPpDJJhTg$c98LVAip1AH7QvbT0LNn8HeqCS4sg.3o3r8x6k32VSX4r.1CxQuwWlUYFdLykmUea2TAKljhdKteKKFhrZEHe1' -f 2
+ansible all -i ./hosts -m copy -a "src=createswap.sh dest=/root/createswap.sh mode=700"
+ansible all -i ./hosts -a "sh /root/createswap.sh" -vvvv
+ansible all -i hosts -a "yum install -y wget" -vvvv
+
+
+# Running base.sh on every machine is error prone, so we run it directly on the machine. 
+# 
+# In order to create new machines, we use the existing snapshot and create new machines. 
